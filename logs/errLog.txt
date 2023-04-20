@@ -1,2 +1,4 @@
 2023-04-19	01:39:28	85362d55-6785-45eb-bd17-06c88501b3a6	TypeError: fsPromises.readFil is not a function
 2023-04-20	01:16:09	8dd863b4-127b-4033-8c51-64e5c1563348	ReferenceError : next is not defined
+2023-04-20	11:24:37	622b7b57-19d6-418d-a629-19a28b5372f3	SyntaxError : Unexpected token } in JSON at position 14
+2023-04-20	11:24:44	b2267ca6-0258-4d2e-8b98-70b1b62d084a	SyntaxError : Unexpected token } in JSON at position 12
