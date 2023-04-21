@@ -2,47 +2,30 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const cors = require("cors");
+const crosOptions = require('./config/corsOptions');
 const { logger } = require("./middleware/logEvent");
 const { errorHandler } = require("./middleware/errorHandler");
 const { error } = require("console");
 //create the port
 const PORT = process.env.PORT || 3500;
-
 //custom middleware logger
 app.use(logger);
-
-const whiteList = [
-  "https://www.yoursite.com",
-  "http://127.0.0.1:5500",
-  "http://localhost:3500",
-];
-const crosOptions = {
-  origin: (origin, callback) => {
-    if (whiteList.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new error("Not allowed by CROS"));
-    }
-  },
-  optionsSuccessStatus: 200,
-};
 //cross origin resource sharing
 app.use(cors(crosOptions));
-
 // build-in middleware to handle urlencoded data
 //in other words, form dat a
 // 'content-type application/x-www-form-urlencoded'
 app.use(express.urlencoded({ extended: false }));
-
 //build in middleware for json
 app.use(express.json());
-
 //serve static files
 app.use(express.static(path.join(__dirname, "/public")));
-app.use("/subdir", express.static(path.join(__dirname, "/public")));
 
 app.use("/", require("./routes/root"));
-app.use("/subdir", require("./routes/subdir"));
+app.use("/register", require("./routes/register"));
+app.use("/auth", require("./routes/auth"));
+
+
 app.use("/employees", require("./routes/api/employees"));
 
 app.all("*", (req, res) => {
