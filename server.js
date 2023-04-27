@@ -1,15 +1,26 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const path = require("path");
 const cors = require("cors");
+const mongoose = require('mongoose');
 const crosOptions = require('./config/corsOptions');
 const { logger } = require("./middleware/logEvent");
 const { errorHandler } = require("./middleware/errorHandler");
-const { error } = require("console");
+const verifyJWT = require("./middleware/verifyJWT");
+const cookieParser = require('cookie-parser');
+const credentials = require('./middleware/credentials');
+const connectDB = require('./config/dbConn');
 //create the port
 const PORT = process.env.PORT || 3500;
+//connect Db
+connectDB();
+
 //custom middleware logger
 app.use(logger);
+//Handle options credentials check - before CORS |
+//ans fetch cookies credentials requirment
+app.use(credentials);
 //cross origin resource sharing
 app.use(cors(crosOptions));
 // build-in middleware to handle urlencoded data
@@ -18,14 +29,19 @@ app.use(cors(crosOptions));
 app.use(express.urlencoded({ extended: false }));
 //build in middleware for json
 app.use(express.json());
+//add middleware for cookies
+app.use(cookieParser());
 //serve static files
 app.use(express.static(path.join(__dirname, "/public")));
-
+//route
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
+app.use("/refresh", require("./routes/refresh"));
+app.use("/logout", require("./routes/logout"));
 
-
+//token
+app.use(verifyJWT);
 app.use("/employees", require("./routes/api/employees"));
 
 app.all("*", (req, res) => {
@@ -41,6 +57,11 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}.....`);
-});
+mongoose.connection.once('open', ()=>{
+  console.log('Connected to the MongoDB');
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}.....`);
+  });
+  
+})
+
