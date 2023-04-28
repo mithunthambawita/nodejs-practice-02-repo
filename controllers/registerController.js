@@ -1,34 +1,28 @@
-const userDB = {
-    users : require('../model/users.json'),
-    setUsers : function (data) {this.users = data}
-}
-const fsPromises = require('fs').promises;
-const path = require('path');
+const User = require('../model/User');
 const bcrypt = require('bcrypt'); 
 
 const handleNewUser = async (req,res)=>{
     const {user,pwd}= req.body;
     if(!user || !pwd) return res.status(400).json({'message' : 'Username and password are required'});
     //check for dublicate username in the db
-    const dublicate = userDB.users.find(person => person.username === user);
+    const dublicate = await User.findOne({username:user}).exec();
     if(dublicate) return res.sendStatus(409); //conflict
     try {
         //encrypt the password
         const hashedpwd = await bcrypt.hash(pwd,10);
-        //store the new user
-        const newUser = {
+        //Create and store the new user
+        const result = await User.create({
             "username": user,
-            "roles":{
-                "User":2001
-            },
             "password": hashedpwd
-        };
-        userDB.setUsers([...userDB.users,newUser])
-        await fsPromises.writeFile(
-            path.join(__dirname,'..','model','users.json'),
-            JSON.stringify(userDB.users)
-        );
-         console.log(userDB.users);
+        });
+
+//         const newUser = new User();
+//         newUser.username = user;
+//         newUser.password = hashedpwd;
+//         const result = await newUser.save();
+
+
+       console.log(result);
          res.status(200).json({'success':`New user ${user} created!`});
 
     } catch (err) {

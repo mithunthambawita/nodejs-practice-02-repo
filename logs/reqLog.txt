@@ -154,3 +154,6 @@
 2023-04-22	12:55:01	05e7b74c-cb62-4f2d-89d5-4daf55117a87	GET	undefined	/refresh
 2023-04-22	12:56:06	150978db-123d-4cdc-8a6d-152cd2d00345	GET	undefined	/auth
 2023-04-22	12:56:22	2be3ebb5-a396-4332-823d-76a41a651736	POST	undefined	/auth
+2023-04-29	00:41:19	2697df8f-86d4-4e71-b006-48405107f5f2	POST	undefined	/register
+2023-04-29	00:41:32	607b312e-ad2b-4c42-803f-dab97b1da0d3	POST	undefined	/register
+2023-04-29	00:41:42	ad89fbbd-4b21-4876-b46c-ade16937db08	POST	undefined	/register
